@@ -29,7 +29,40 @@ button:active{transform:scale(.96)}
 .big b{font-family:"Fredoka",system-ui,sans-serif;font-size:60px;line-height:1;color:var(--berry);display:block}
 .big span,.per p{color:var(--mute);font-size:15px}
 .per h3{margin:0 0 6px;font-size:16px}.per p{margin:2px 0}.per b{color:var(--ink);font-size:20px;margin-right:6px}
-.flavor-section{margin-bottom:10px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+  
+.flavor-section{margin-bottom:10px}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:18px
+}
+
+.filters{
+  display:grid;
+  grid-template-columns:minmax(220px,1.8fr) minmax(190px,1fr);
+  gap:10px;
+  margin:0 0 8px
+}
+
+.filters input,
+.filters select{
+  width:100%;
+  min-width:0
+}
+
+.filter-note{
+  color:var(--mute);
+  font-size:13px;
+  margin:0 0 18px
+}
+
+@media(max-width:600px){
+  .filters{
+    grid-template-columns:1fr
+  }
+}
+  
 .tub{border-radius:22px 22px 26px 26px;background:var(--card);border:2px solid var(--line);overflow:hidden}
 .lid{background:hsl(var(--h) 80% 82%);border-bottom:6px solid hsl(var(--h) 65% 68%);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;color:#4a2c2a}
 .tn{font-size:20px;font-weight:600}
@@ -78,8 +111,37 @@ dialog{border:0;border-radius:26px;padding:22px;background:var(--card);color:var
 <div id="app" hidden>
 <div class="top"><div class="brand"><div class="logo">🍦</div><div><h1 class="brandname"></h1><small>Freezer inventory</small></div></div><button class="btn alt" id="out">Sign out</button></div>
 <div class="strip" id="stats"></div>
-<h2>In the freezer</h2>
+
+  <h2>In the freezer</h2>
+
+<div class="filters">
+  <input
+    id="search"
+    type="search"
+    placeholder="🔎 Search flavors..."
+    autocomplete="off"
+    aria-label="Search flavors"
+  >
+
+<!-- <h2>In the freezer</h2>
+<div id="flavors" class="grid"></div>  I changed it with this until like 110 -->
+
+  
+  <select id="categoryFilter" aria-label="Filter by category">
+    <option value="All">🍦 All categories</option>
+    <option value="Main">🍦 Main Flavors</option>
+    <option value="Seasonal">🍂 Seasonal</option>
+    <option value="Sherbet">🍧 Sherbet</option>
+    <option value="Yogurt">🥄 Yogurt</option>
+    <option value="Sugar Free">🍓 Sugar Free</option>
+    <option value="Sorbet">🍋 Sorbet</option>
+  </select>
+</div>
+
+<p id="filterNote" class="filter-note" hidden></p>
+
 <div id="flavors" class="grid"></div>
+  
 <h2>Add a flavor</h2>
 <form id="add"><input id="fname" placeholder="Flavor name, e.g. Mint chip" maxlength="40" required><select id="fcat" aria-label="Flavor category" required><option value="">Choose category</option><option>Main</option><option>Seasonal</option><option>Sherbet</option><option>Yogurt</option><option>Sugar Free</option><option>Sorbet</option></select><button class="btn" type="submit">Add flavor</button></form>
 <div class="two"><div><h2>Business deliveries</h2><div class="card"><ul id="biz"></ul></div></div>
