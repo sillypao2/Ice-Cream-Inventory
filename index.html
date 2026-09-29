@@ -161,7 +161,11 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const status=n=>n<=0?["Sold Out","Sold"]:n<=LOW?["Low","Low"]:["Available","Available"];
+  
 let F=[],A=[],pending=null,chan=null;
+let searchTerm="";
+let categoryFilter="All";
+  
 const fail=e=>alert(e.message||e);
 
 async function load(){
@@ -193,9 +197,38 @@ function render(){
     "Sorbet":"🍋 Sorbet"
   };
 
-  $("flavors").innerHTML=cats.map(cat=>{
-    const items=F.filter(f=>(f.category||"Main")===cat)
-      .sort((a,b)=>a.name.localeCompare(b.name));
+
+<!-- replacing this as well -->
+  
+
+
+const filtered = F.filter(f => {
+  const name = (f.name || "").toLowerCase();
+  const category = f.category || "Main";
+
+  const matchesSearch =
+    !searchTerm || name.includes(searchTerm);
+
+  const matchesCategory =
+    categoryFilter === "All" || category === categoryFilter;
+
+  return matchesSearch && matchesCategory;
+});
+
+const hasFilters = searchTerm || categoryFilter !== "All";
+
+$("filterNote").hidden = !hasFilters;
+
+if (hasFilters) {
+  $("filterNote").textContent =
+    `${filtered.length} flavor${filtered.length === 1 ? "" : "s"} found`;
+}
+
+$("flavors").innerHTML=cats.map(cat=>{
+  const items=filtered.filter(f=>(f.category||"Main")===cat)
+    .sort((a,b)=>a.name.localeCompare(b.name));
+
+    
     if(!items.length)return "";
     return `<section class="flavor-section">
       <h2>${catLabels[cat]}</h2>
@@ -216,8 +249,11 @@ function render(){
         <button class="del" data-del="${f.id}">Remove flavor</button></div></div>`;
       }).join("")}</div>
     </section>`;
-  }).join("") || `<div class="empty">🐸 The freezer is empty, and the frog is worried. Add your first flavor below.</div>`;
-
+}).join("") || `<div class="empty">${
+  hasFilters
+    ? "🍦 No flavors match your search or category."
+    : "🐸 The freezer is empty, and the frog is worried. Add your first flavor below."
+}</div>`;
   const day=new Date().setHours(0,0,0,0);
   const n=(t,from)=>A.filter(e=>e.type===t&&new Date(e.created_at)>=from).length;
   const total=F.reduce((s,f)=>s+f.count,0);
@@ -233,7 +269,19 @@ function render(){
     return `<li><span>${LBL[e.type]}: ${esc(e.flavor_name)}${e.business?" to "+esc(e.business):""}</span><small>${t}</small></li>`;
   }).join(""):`<div class="empty">Activity will show up here as you add, sell, and deliver.</div>`;
 }
+
+  $("search").oninput = e => {
+  searchTerm = e.target.value.trim().toLowerCase();
+  render();
+};
+
+$("categoryFilter").onchange = e => {
+  categoryFilter = e.target.value;
+  render();
+};
+
 $("flavors").onclick=async e=>{
+  
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.del){const f=F.find(x=>x.id===b.dataset.del);
     if(f&&confirm(`Remove "${f.name}"?`)){const {error}=await sb.from("flavors").delete().eq("id",f.id);if(error)fail(error);load()}}
