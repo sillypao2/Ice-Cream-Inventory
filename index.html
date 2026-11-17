@@ -218,9 +218,9 @@ dialog{border:0;border-radius:26px;padding:22px;background:var(--card);color:var
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 <script>
-// 1) Paste your Supabase values here (Project Settings > API). The anon key is meant to be public.
-const SUPABASE_URL="https://axuauredbijzyacfwtbf.supabase.co", SUPABASE_KEY="sb_publishable_STYMbw8Pl_iNCurL5TYKuw_Cb410YZG";
-const BRAND="The Apple Valley Creamery"; // your business name shows in the header
+
+  const SUPABASE_URL="https://axuauredbijzyacfwtbf.supabase.co", SUPABASE_KEY="sb_publishable_STYMbw8Pl_iNCurL5TYKuw_Cb410YZG";
+const BRAND="The Apple Valley Creamery"; // YAY!
 const LOW=2; // "Low" = this many buckets or fewer
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
@@ -299,6 +299,7 @@ function render(){
   document.querySelectorAll(".brandname").forEach(e=>e.textContent=BRAND);
   document.title=BRAND+" · Freezer";
 
+  //Includes cute emojis for the type of ice cream it is :)
   const cats=["Main","Seasonal","Sherbet","Yogurt","Sugar Free","Sorbet"];
   const catInfo={
     "Main":{label:"Main Flavors",emoji:"🍦",bg:"#ffe5ee",hint:""},
@@ -535,7 +536,8 @@ async function exportCurrentInventory(){
     const ws=XLSX.utils.json_to_sheet(rows,{header:headers});
     ws["!autofilter"]={ref:ws["!ref"]};
     ws["!cols"]=[{wch:30},{wch:20},{wch:18},{wch:22},{wch:18}];
-    // Apply readable Excel formatting: dark header, alternating gray rows, bold total.
+    
+    // Dark header for the Excel sheet ughhh, adds stripes
     const weeklyHeaderStyle={
       font:{bold:true,color:{rgb:"FFFFFF"}},
       fill:{patternType:"solid",fgColor:{rgb:"374151"}},
@@ -689,7 +691,7 @@ document.querySelectorAll(".utility-tab").forEach(tab=>{
 });
 
 // Easter eggs 🐸: tap the little frog at the bottom, or tap the logo 5 times
-const RIBBIT=["ribbit!","ribbit ribbit","brrrrribbit","got any mint chip?","hop hop!","froggy approves 🍦"];
+const RIBBIT=["ribbit!","hey there cutie! ","brrrrribbit","got any mint chip?","hop hop!","froggy approves 🍦"];
 let taps=0,tt;
 $("frog").onclick=e=>{const b=e.currentTarget;b.classList.remove("hop");void b.offsetWidth;b.classList.add("hop");
   b.querySelector(".say")?.remove();const m=document.createElement("span");m.className="say";
